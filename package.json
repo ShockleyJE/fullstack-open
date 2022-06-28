@@ -1,0 +1,26 @@
+{
+  "name": "fullstack-open-3-exercises",
+  "version": "1.0.0",
+  "description": "Exercises for fullstack open chapter 3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShockleyJE/fullstack-open.git"
+  },
+  "author": "James Shockley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShockleyJE/fullstack-open/issues"
+  },
+  "homepage": "https://github.com/ShockleyJE/fullstack-open#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
