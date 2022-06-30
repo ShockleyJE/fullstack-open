@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const { response } = require("express");
+const morgan = require("morgan");
 //const { response } = require("express");
 
 let data = [
@@ -43,13 +44,35 @@ app.use(express.static("html"));
 
 app.use(express.json());
 
+//Morgan test
+app.use(morgan("tiny"));
+//Morgan test end
+
+// Middleware test
+const requestLogger = (request, response, next) => {
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
+
+//app.use(requestLogger);
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
 app.get("/", (request, response) => {
   console.log(request.headers);
   response.send("<h1>Hello World!</h1>");
 });
 
+app.use(unknownEndpoint);
+
+//Middleware test end
+
 app.get("/api/persons", (request, response) => {
-  console.log(request.headers);
   response.json(data);
 });
 
@@ -57,7 +80,6 @@ app.get("/api/persons/:id", (request, response) => {
   const id = String(request.params.id);
   if (data[id]) {
     const item = data.filter((x) => x.id == id);
-    console.log(item);
     response.json(item);
   } else {
     console.log("it aint here, chief");
@@ -80,9 +102,9 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons/", (request, response) => {
-  console.log(request.body);
   let name, number;
   let id = Math.floor(Math.random() * 100);
+  //The name or number is missing
   try {
     name = String(request.body.name);
     number = String(request.body.number);
@@ -90,12 +112,18 @@ app.post("/api/persons/", (request, response) => {
     console.log("params do not exist in request");
     response.sendStatus(400);
   }
-  data.push({
-    id: id,
-    name: name,
-    number: number,
-  });
-  response.json(data.filter((x) => x.id === id));
+  //The name already exists in the phonebook
+  if (data.filter((x) => x.name === name).length > 0) {
+    console.log(`${name} exists in the database`);
+    response.sendStatus(418);
+  } else {
+    data.push({
+      id: id,
+      name: name,
+      number: number,
+    });
+    response.json(data.filter((x) => x.id === id));
+  }
 });
 
 app.get("/api/info", (request, response) => {
