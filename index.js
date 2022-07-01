@@ -45,7 +45,13 @@ app.use(express.static("html"));
 app.use(express.json());
 
 //Morgan test
-app.use(morgan("tiny"));
+morgan.token("body", function (req, res) {
+  return JSON.stringify(req.body);
+});
+//app.use(morgan("tiny"));
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 //Morgan test end
 
 // Middleware test
