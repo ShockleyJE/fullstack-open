@@ -7,10 +7,10 @@ function Header(props) {
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
 const StatisticsLine = (props) => (
-  <p>
-    <span>{props.text} </span>
-    <span> {props.value}</span>
-  </p>
+  <tr>
+    <td>{props.text} </td>
+    <td> {props.value}</td>
+  </tr>
 );
 
 const Statistics = ({ good, bad, neutral, all, feedback }) => {
@@ -22,13 +22,15 @@ const Statistics = ({ good, bad, neutral, all, feedback }) => {
   };
   if (feedback) {
     return (
-      <div>
-        <StatisticsLine text="good" value={good} />
-        <StatisticsLine text="neutral" value={neutral} />
-        <StatisticsLine text="all" value={all} />
-        <StatisticsLine text="average" value={calcAvg()} />
-        <StatisticsLine text="positive" value={calcPos()} />
-      </div>
+      <table>
+        <tbody>
+          <StatisticsLine text="good" value={good} />
+          <StatisticsLine text="neutral" value={neutral} />
+          <StatisticsLine text="all" value={all} />
+          <StatisticsLine text="average" value={calcAvg()} />
+          <StatisticsLine text="positive" value={calcPos()} />
+        </tbody>
+      </table>
     );
   }
 };
