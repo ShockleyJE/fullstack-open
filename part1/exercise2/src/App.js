@@ -6,29 +6,31 @@ function Header(props) {
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const Stat = (props) => (
+const StatisticsLine = (props) => (
   <p>
     <span>{props.text} </span>
     <span> {props.value}</span>
   </p>
 );
 
-const Statistics = ({ good, bad, neutral, all }) => {
+const Statistics = ({ good, bad, neutral, all, feedback }) => {
   const calcAvg = () => {
     return (good * 1 + neutral * 0 + bad * -1) / all || 0;
   };
   const calcPos = () => {
     return (good / all) * 100 || 100;
   };
-  return (
-    <div>
-      <Stat text="good" value={good} />
-      <Stat text="neutral" value={neutral} />
-      <Stat text="all" value={all} />
-      <Stat text="average" value={calcAvg()} />
-      <Stat text="positive" value={calcPos()} />
-    </div>
-  );
+  if (feedback) {
+    return (
+      <div>
+        <StatisticsLine text="good" value={good} />
+        <StatisticsLine text="neutral" value={neutral} />
+        <StatisticsLine text="all" value={all} />
+        <StatisticsLine text="average" value={calcAvg()} />
+        <StatisticsLine text="positive" value={calcPos()} />
+      </div>
+    );
+  }
 };
 
 const App = () => {
@@ -37,17 +39,23 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
   const [all, setAll] = useState(0);
+  const [feedback, setFeedback] = useState(false);
+
+  const handlerGod = () => {
+    setFeedback(true);
+    setAll(all + 1);
+  };
 
   const handleGood = () => {
-    setAll(all + 1);
+    handlerGod();
     setGood(good + 1);
   };
   const handleNeutral = () => {
-    setAll(all + 1);
+    handlerGod();
     setNeutral(neutral + 1);
   };
   const handleBad = () => {
-    setAll(all + 1);
+    handlerGod();
     setBad(bad + 1);
   };
 
@@ -58,7 +66,13 @@ const App = () => {
       <Button text="neutral" onClick={handleNeutral} />
       <Button text="bad" onClick={handleBad} />
       <Header text="statistics" />
-      <Statistics good={good} bad={bad} neutral={neutral} all={all} />
+      <Statistics
+        good={good}
+        bad={bad}
+        neutral={neutral}
+        all={all}
+        feedback={feedback}
+      />
     </div>
   );
 };
