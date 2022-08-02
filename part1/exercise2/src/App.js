@@ -6,10 +6,10 @@ function Header(props) {
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const Stat = ({ text, value }) => (
+const Stat = (props) => (
   <p>
-    <span>{text} </span>
-    <span> {value}</span>
+    <span>{props.text} </span>
+    <span> {props.value}</span>
   </p>
 );
 
@@ -18,15 +18,27 @@ const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [all, setAll] = useState(0);
+
+  const calcAvg = () => {
+    return (good * 1 + neutral * 0 + bad * -1) / all || 0;
+  };
+
+  const calcPos = () => {
+    return (good / all) * 100 || 100;
+  };
 
   const handleGood = () => {
-    setGood(Number(good) + 1);
+    setAll(all + 1);
+    setGood(good + 1);
   };
   const handleNeutral = () => {
-    setNeutral(Number(neutral) + 1);
+    setAll(all + 1);
+    setNeutral(neutral + 1);
   };
   const handleBad = () => {
-    setBad(Number(bad) + 1);
+    setAll(all + 1);
+    setBad(bad + 1);
   };
 
   return (
@@ -38,7 +50,9 @@ const App = () => {
       <Header text="statistics" />
       <Stat text="good" value={good} />
       <Stat text="neutral" value={neutral} />
-      <Stat text="bad" value={bad} />
+      <Stat text="all" value={all} />
+      <Stat text="average" value={calcAvg()} />
+      <Stat text="positive" value={calcPos()} />
     </div>
   );
 };
