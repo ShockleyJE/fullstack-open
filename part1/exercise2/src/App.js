@@ -1,7 +1,19 @@
 import { useState } from "react";
 
-function Header(props) {
-  return <h2>{props.text}</h2>;
+function Header({ text }) {
+  return <h2>{text}</h2>;
+}
+
+function Paragraph({ text }) {
+  return <p>{text}</p>;
+}
+
+function Anecdote({ anecdoteData }) {
+  return (
+    <div>
+      <Paragraph text={anecdoteData.text} />
+    </div>
+  );
 }
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
@@ -43,6 +55,39 @@ const App = () => {
   const [all, setAll] = useState(0);
   const [feedback, setFeedback] = useState(false);
 
+  class AnecdoteData {
+    constructor(id, text) {
+      this.id = id;
+      this.text = text;
+      this.points = 0;
+    }
+
+    voteAnecdote() {
+      this.points += 1;
+    }
+  }
+
+  let anecdotes_t = [
+    "If it hurts, do it more often.",
+    "Adding manpower to a late software project makes it later!",
+    "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "Premature optimization is the root of all evil.",
+    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
+  ];
+
+  let counter = 0;
+  while (typeof anecdotes_t[anecdotes_t.length - 1] === "string") {
+    let text = anecdotes_t.pop();
+    anecdotes_t.unshift(new AnecdoteData(counter, text));
+    counter += 1;
+  }
+
+  const [anecdotes, setAnecdotes] = useState(anecdotes_t);
+  const [anecdoteRandCurID, setAnecdotesRandCurID] = useState(0);
+  const [anecdoteDailyCurID, setAnecdotesDailyCurID] = useState(0);
+
   const handlerGod = () => {
     setFeedback(true);
     setAll(all + 1);
@@ -61,6 +106,34 @@ const App = () => {
     setBad(bad + 1);
   };
 
+  const handleDailyAnecdote = () => {
+    let anecdote_clone = [...anecdotes];
+    debugger;
+    anecdote_clone.sort((a, b) => (a.points > b.points ? 1 : -1));
+    debugger;
+    let highestID = anecdote_clone.pop().id;
+    debugger;
+    setAnecdotesDailyCurID(highestID);
+  };
+
+  const handleRandomAnecdote = () => {
+    let rand = Math.ceil(Math.random() * anecdotes.length);
+    setAnecdotesRandCurID(rand);
+  };
+
+  const handleVoteAnecdote = () => {
+    //copy the current anecdotes array
+    let anecdote_clone = [...anecdotes];
+    //update the points property of the anecdote object at the current index
+    anecdote_clone[anecdoteRandCurID].voteAnecdote();
+    //use the anecdotes handler to update the anecdotes array
+    console.log(`voted for anecdote!`);
+    console.log(anecdote_clone[anecdoteRandCurID]);
+    setAnecdotes(anecdote_clone);
+    handleDailyAnecdote();
+    return;
+  };
+
   return (
     <div>
       <Header text="give feedback" />
@@ -75,6 +148,12 @@ const App = () => {
         all={all}
         feedback={feedback}
       />
+      <Header text="random anecdote" />
+      <Anecdote anecdoteData={anecdotes[anecdoteRandCurID]} />
+      <Button text="vote" onClick={handleVoteAnecdote} />
+      <Button text="new anecdote" onClick={handleRandomAnecdote} />
+      <Header text="daily anecdote" />
+      <Anecdote anecdoteData={anecdotes[anecdoteDailyCurID]} />
     </div>
   );
 };
