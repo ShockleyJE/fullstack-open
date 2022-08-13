@@ -77,14 +77,12 @@ const App = () => {
     "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
   ];
 
-  let counter = 0;
-  while (typeof anecdotes_t[anecdotes_t.length - 1] === "string") {
-    let text = anecdotes_t.pop();
-    anecdotes_t.unshift(new AnecdoteData(counter, text));
-    counter += 1;
-  }
+  anecdotes_t = anecdotes_t.map((ele, idx) => new AnecdoteData(idx, ele));
+  debugger;
 
   const [anecdotes, setAnecdotes] = useState(anecdotes_t);
+  debugger;
+
   const [anecdoteRandCurID, setAnecdotesRandCurID] = useState(0);
   const [anecdoteDailyCurID, setAnecdotesDailyCurID] = useState(0);
 
